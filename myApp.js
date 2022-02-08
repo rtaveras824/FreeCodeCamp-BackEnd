@@ -90,6 +90,7 @@ const removeManyPeople = (done) => {
 const queryChain = (done) => {
   const foodToSearch = "burrito";
   Person.find({favoriteFoods: foodToSearch}, (err, data) => {
+    if (err) console.error(err);
     console.log("FOUND");
     done(null, data);
   });
