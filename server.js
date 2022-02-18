@@ -32,7 +32,14 @@ app.get("/api", function (req, res) {
 });
 
 app.get("/api/:date", function (req, res) {
-	var date = new Date(req.params.date);
+	var dateArg;
+
+	if (!isNaN(req.params.date)) {
+		dateArg = parseInt(req.params.date)
+	} else {
+		dateArg = req.params.date;
+	}
+	var date = new Date(dateArg);
 	if (date == null || date == 'Invalid Date') {
 		res.json({ error: 'Invalid Date' });
 	} else {
