@@ -39,6 +39,7 @@ app.get("/api/:date", function (req, res) {
 	} else {
 		dateArg = req.params.date;
 	}
+	
 	var date = new Date(dateArg);
 	if (date == null || date == 'Invalid Date') {
 		res.json({ error: 'Invalid Date' });
