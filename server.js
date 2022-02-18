@@ -26,6 +26,16 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/whoami", function(req, res) {
+	console.log(req.headers);
+	console.log(req.ip);
+	res.json({
+		ipaddress: req.ip,
+		language: req.headers['accept-language'],
+		software: req.headers['user-agent']
+	});
+});
+
 app.get("/api", function (req, res) {
 	var date = new Date();
 	res.json({ unix: date.valueOf(), utc: date.toUTCString() });
@@ -47,6 +57,8 @@ app.get("/api/:date", function (req, res) {
 		res.json({ unix: date.valueOf(), utc: date.toUTCString() });
 	}
 });
+
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
