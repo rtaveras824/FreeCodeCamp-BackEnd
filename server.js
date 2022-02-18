@@ -25,7 +25,8 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api/:date", function (req, res) {
-	res.json({ date: req.params.date });
+	let date = new Date(req.params.date);
+	res.send(date);
 });
 
 // listen for requests :)
