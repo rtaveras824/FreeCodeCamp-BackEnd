@@ -2,9 +2,35 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const dns = require('dns');
+
+let count = 0;
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const urlSchema = new Schema({
+	original_url: {
+		type: String,
+		required: true,
+		unique: true
+	},
+	short_url: {
+		type: Number,
+		required: true,
+		unique: true
+	}
+});
+
+const URL = mongoose.model('Url', urlSchema);
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(cors());
 
@@ -17,6 +43,45 @@ app.get('/', function(req, res) {
 // Your first API endpoint
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
+});
+
+app.post('/api/shorturl', function(req, res, next) {
+	let newUrl = req.body.url;
+	const regex = /^http:\/\/(www\.)*|^https:\/\/(www\.)*/;
+
+	let validUrl = regex.test(newUrl);
+
+	if (validUrl) {
+		hostName = newUrl.replace(regex, "");
+
+		dns.lookup(hostName, (err, addr, family) => {
+			if (err) {
+				res.send(err);
+				next();
+			}
+			console.log(addr);
+
+			let urlData = { original_url: newUrl, short_url: ++count };
+			let url = new URL(urlData);
+			url.save((err, data) => {
+				if (err) {
+					res.json(err);
+					console.log(err);
+					next();
+				}
+				res.json(data);
+			});
+		});
+	} else {
+		res.json({ error: "Not a valid url." })
+	}
+	
+});
+
+app.get('/api/shorturl/:code', function(req, res) {
+	URL.findOne({ short_url: req.params.code }, (err, data) => {
+		res.redirect(data.original_url);
+	});
 });
 
 app.listen(port, function() {
