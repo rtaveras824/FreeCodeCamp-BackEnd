@@ -69,11 +69,11 @@ app.post('/api/shorturl', function(req, res, next) {
 					console.log(err);
 					next();
 				}
-				res.json(data);
+				res.json(urlData);
 			});
 		});
 	} else {
-		res.json({ error: "invalid url" })
+		res.json({ error: "invalid url" });
 	}
 	
 });
