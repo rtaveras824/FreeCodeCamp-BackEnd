@@ -79,6 +79,9 @@ app.post('/api/shorturl', function(req, res, next) {
 
 app.get('/api/shorturl/:code', function(req, res) {
 	URL.findOne({ short_url: req.params.code }, (err, data) => {
+		if (err) {
+			res.send(err);
+		}
 		res.redirect(data.original_url);
 	});
 });
