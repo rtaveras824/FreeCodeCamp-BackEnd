@@ -59,7 +59,6 @@ app.post('/api/shorturl', function(req, res, next) {
 				res.send(err);
 				next();
 			}
-			console.log(addr);
 
 			let urlData = { original_url: newUrl, short_url: ++count };
 			let url = new URL(urlData);
