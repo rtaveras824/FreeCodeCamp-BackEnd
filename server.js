@@ -73,7 +73,7 @@ app.post('/api/shorturl', function(req, res, next) {
 			});
 		});
 	} else {
-		res.json({ error: "Not a valid url." })
+		res.json({ error: "invalid url" })
 	}
 	
 });
