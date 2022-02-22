@@ -56,6 +56,8 @@ app.post('/api/shorturl', function(req, res, next) {
 
 		dns.lookup(hostName, (err, addr, family) => {
 			if (err) {
+				console.log("------ DOMAIN ERROR ------")
+				console.log(err);
 				res.send(err);
 				next();
 			}
@@ -64,8 +66,9 @@ app.post('/api/shorturl', function(req, res, next) {
 			let url = new URL(urlData);
 			url.save((err, data) => {
 				if (err) {
-					res.json(err);
+					console.log("------ SAVE ERROR ------")
 					console.log(err);
+					res.json(err);
 					next();
 				}
 				res.json(urlData);
@@ -80,6 +83,7 @@ app.post('/api/shorturl', function(req, res, next) {
 app.get('/api/shorturl/:code', function(req, res) {
 	URL.findOne({ short_url: req.params.code }, (err, data) => {
 		if (err) {
+			console.log("------ REDIRECT ERROR ------")
 			res.send(err);
 		}
 		res.redirect(data.original_url);
