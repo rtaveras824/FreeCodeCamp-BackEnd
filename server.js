@@ -59,7 +59,7 @@ app.post('/api/shorturl', function(req, res, next) {
 				console.log("------ DOMAIN ERROR ------")
 				console.log(err);
 				//res.send(err);
-				//next();
+				////next();
 			}
 
 			let urlData = { original_url: newUrl, short_url: ++count };
