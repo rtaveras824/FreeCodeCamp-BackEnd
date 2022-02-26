@@ -77,15 +77,16 @@ app.get('/api/users', function(req, res) {
 });
 
 app.post('/api/users/:id/exercises', function(req, res) {
-	User.findOne({ _id: req.params.id }, (err, data) => {
+	User.findOne({ _id: req.params.id }, (err, userData) => {
 		if (err) {
 			console.error(err);
 			return res.json(err);
 		}
-		if (data) {
+		if (userData) {
 			let reqDate = req.body.date;
-
-			if (data.date == null) {
+			console.log(reqDate);
+			if (reqDate == null || reqDate == '') {
+				console.log('Default Req Date');
 				let date = new Date();
 				let year = date.getFullYear();
 				let month = date.getMonth() + 1;
@@ -97,10 +98,10 @@ app.post('/api/users/:id/exercises', function(req, res) {
 			}
 
 			let exercise = new Exercise({
-				username: data.username,
+				username: userData.username,
 				description: req.body.description,
 				duration: req.body.duration,
-				date: reqDate
+				date: reqDate,
 			});
 			exercise.save((err, data) => {
 				if (err) {
@@ -112,7 +113,7 @@ app.post('/api/users/:id/exercises', function(req, res) {
 					description: data.description,
 					duration: data.duration,
 					date: new Date(data.date).toDateString(),
-					_id: data._id
+					_id: userData._id
 				});
 			});
 		} else {
