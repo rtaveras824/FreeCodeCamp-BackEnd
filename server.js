@@ -128,7 +128,17 @@ app.get('/api/users/:id/logs', function(req, res) {
 			console.error(err);
 			return res.json(err);
 		}
-		Exercise.find({ username: userData.username }, '-_id description duration date', (err, exerciseData) => {
+
+		let query = {};
+		query.username = userData.username;
+		if (req.query.from) query.date = { $gte: req.query.from };
+		if (req.query.to) query.date = { $lte: req.query.to };
+		if (req.query.from && req.query.to) query.date = { $gte: req.query.from, $lte: req.query.to };
+
+		let options = {};
+		if (req.query.limit) options = { limit: req.query.limit };
+		
+		Exercise.find(query, '-_id description duration date', options, (err, exerciseData) => {
 			if (err) {
 				console.error(err);
 				return res.json(err);
