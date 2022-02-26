@@ -37,15 +37,14 @@ const exerciseSchema = new Schema({
 	},
 	date: {
 		type: String,
-		required: [true, 'Date required.'],
 		validate: {
 			validator: function(v) {
 				return /\d{4}-\d{2}-\d{2}/.test(v);
 			},
 			message: props => `${props.value} is not a valid date.`
 		}
-	},
-})
+	}
+});
 
 const User = mongoose.model('User', userSchema);
 const Exercise = mongoose.model('Exercise', exerciseSchema);
@@ -84,11 +83,24 @@ app.post('/api/users/:id/exercises', function(req, res) {
 			return res.json(err);
 		}
 		if (data) {
+			let reqDate = req.body.date;
+
+			if (data.date == null) {
+				let date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				if (month < 10) month = `0${month}`;
+				let day = date.getDate();
+				if (day < 10) day = `0${day}`;
+
+				reqDate = `${year}-${month}-${day}`;
+			}
+
 			let exercise = new Exercise({
 				username: data.username,
 				description: req.body.description,
 				duration: req.body.duration,
-				date: req.body.date
+				date: reqDate
 			});
 			exercise.save((err, data) => {
 				if (err) {
